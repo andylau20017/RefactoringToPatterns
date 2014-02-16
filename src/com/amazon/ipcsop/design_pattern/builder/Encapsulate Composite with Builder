@@ -1,0 +1,62 @@
+/**
+建造（Builder）模式属于对象的创建模式。
+1. 定义
+      建造模式将一个产品的内部表象与产品生成过程分割出来，
+      从而可以使一个建造过程生成具有不同的内部表象的产品对象。
+2. 使用的原因
+     是为了将构建复杂对象的过程和它的部件解耦。
+3. 适用的情况
+      建造模式利用一个导演者对象和具体建造者对象一个一个地建造出所有的零件，
+      从而建造出完整的产品对象。建造者模式将产品的结构和产品的零件建造过程对客户端隐藏起来，
+      把对建造过程进行指挥的责任和具体建造零件和责任分割开来，达到责任划分和封装的目的。
+    
+  
+ 用Builder封装Composite
+意图：构造Composite是重复的、复杂的且容易出错的工作。
+通过使用Builder处理构造细节来简化构造过程。
+ 
+动机：Builder模式代表客户代码执行繁重的，复杂的构造步骤。
+重构到Builder的一个常见目的就是简化创建复杂对象的客户代码。
+一旦在Builder中实现了创建过程中的困难的或冗长乏味的部分，
+客户代码就可以指挥Builder的创建工作，而无需了解创建是如何完成的。
+另一个用Builder封装Composite的目的是对客户代码和Composite代码解耦合。
+ 
+优点和缺点：
+＋简化了构造Composite的客户代码
+＋减少了创建Composite的重复和易出错的本性
+＋在客户代码和Composite之间实现了松耦合
+＋允许对以封装的Composite或复杂对象创建不同的表示。
+－接口可能不会很清楚
+ 
+做法：
+1、创建一个生成器，即将要在本次重构结束后成为Builder的类。
+      确定这个生成器可以创建出一个单点Composite。在生成器中添加一个可以返回创建结果的方法。
+2、使生成器可以创建子类型。通常的做法是编写多个方法使得用户可以方便地创建和布置子类型。
+3、如果需要被替换的Composite构造代码可以设置结点的属性或值，
+      确定生成器也可以设置这些属性或值。
+4、思考对客户代码来说，生成器是否足够简单，并使其变得更简单。
+5、把Composite构造代码重构为使用新的生成器。
+*/
+
+//////////////////////////////////////
+      
+TagNode orders = new TagNode("orders");
+TagNode order = new TagNode("order");
+order.addAttribute("number", "123");
+orders.add(order);
+TagNode item = new TagNode("item");
+item.addAttribute("number", "x1786");
+item.addValue("carDoor");
+order.add(item);
+String xml = orders.toString();
+
+
+
+/////////////////////Encapsulate Composite with Builder/////////////////////
+XMLBuilder orders = new XMLBuilder("orders");
+orders.addBelow("order");
+orders.addAttribute("number", "123");
+orders.addBelow("item");
+orders.addAttribute("number", "x1786");
+orders.addValue("carDoor");
+String xml = orders.toString();

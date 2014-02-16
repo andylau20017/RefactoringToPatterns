@@ -1,0 +1,25 @@
+public class SOPDashboardJobMonitor{
+
+	public Response executeActionAndGetResponse(String action, Map params){
+		if (action.equals(START_JOB_A)){
+		  WorkflowScheduler ws = new WorkflowScheduler();
+		  // lots of code to start this job
+		  // find this job
+		  // start this job
+		  // return response of this action
+		} else if (action.equals(STOP_JOB_A)){
+		 // lots of code here 
+		} else if (action.equals(RUNNINT_JOB_LISTS)){
+		 // lots of code here 
+		} else if (action.equals(FAILED_JOB_LISTS)){
+		 // lots of code here 
+		} else if (action.equals(DELAYED_JOB_LISTS)){
+		 // lots of code here 
+		} else if (action.equals(SOP_JOB_A)){
+		  // lots of code here 
+		} 
+		// many more else if
+	}
+}
+
+

@@ -1,0 +1,91 @@
+用Command替换条件调度程序
+ 
+意图：条件逻辑用来调度请求和执行操作。为每个动作创建一个Command。把这些Command存储在一个集合中，并用获取及执行Command的代码替换条件逻辑。
+ 
+动机：许多系统都会收到、发送并处理请求。条件调度程序是一条条件语句，它用来执行请求的发送和处理。有些条件调度程序很适合它们要完成的任务，有些则并不适合。
+适合任务的条件调度程序往往只是把少量的请求发送到少量的处理逻辑中。这种调度程序的代码往往可以在一屏内显示我们不需要滚动屏幕。
+ 
+优点和缺点:
+＋提供了用统一方法执行不同行为的简单机制。
+＋允许在运行时改变所处理的请求，以及如何处理请求。
+＋仅仅需要很少的代码实现。
+－当条件调度程序已经足够的时候，会增加设计的复杂度。
+ 
+做法：
+1、在包含条件调度程序的类中找到处理请求的代码，在这段代码上应用提炼方法重构，直到产生执行该代码行为的执行方法为止。
+2、重复步骤1，把所有剩余的请求处理代码提炼到各自的执行方法中。
+3、在每个执行方法上应用提炼类重构，产生处理请求的具体命令。
+4、定义一个命令，即声明了与每个具体命令相同的执行方法的接口或抽象类。
+5、使每个具体命令都实现或继承这个命令，并用命令类型更新所有使用具体命令的客户代码。
+6、在包含条件调度程序的类中，定义并组装一个命令映射，这个映射包含每个具体命令，并用唯一标识符作为主键，在运行时可以用这个主键获取命令。
+7、在包含条件调度程序的类中，把调度程序请求的条件代码替换为获取正确的具体命令并调用其执行方法的代码。
+
+public abstract class Command {
+  protected WorkflowScheduler ws;
+  
+  public Command(WorkflowScheduler ws){
+  	this.ws = ws;
+  }
+  
+}
+
+public class StartJobCommand extends Command {
+	public StartJobCommand(WorkflowScheduler ws){
+  		super(ws);
+  	}
+  	
+  	 public Response execute(Map prams){
+  	     // WorkflowScheduler execute start action
+     }
+  }
+}
+
+public class StopJobCommand extends Command {
+	public StopJobCommand(WorkflowScheduler ws){
+  		super(ws);
+  	}
+  	
+  	 public Response execute(Map prams){
+  	     // WorkflowScheduler execute stop action
+  	     ws.dosomething();
+     }
+  }
+}
+
+public class ListFailedJobCommand extends Command {
+	public ListFailedJobCommand(WorkflowScheduler ws){
+  		super(ws);
+  	}
+  	
+  	 public Response execute(Map prams){
+  	     // WorkflowScheduler execute ListFailedJobCommand
+     }
+  }
+}
+
+// Other Commands
+
+
+public class SOPDashboardJobMonitor{
+	private Map commands;
+	protected static WorkflowScheduler ws;
+	
+	private Command lookupCommandBy(String command_name){
+		return (Command)commands.get(command_name);
+	}
+	
+	public void createCommands() {
+		commands = new HashMap();
+		commands.put(START_JOB, new StartJobCommand());
+		commands.put(STOP_JOB, new StopJobCommand());
+		commands.put(FAILED_JOB_LIST, new ListFailedJobCommand());
+		.....
+	}
+	
+	public Response executeActionAndGetResponse(String action, Map params){
+		Command cmd = lookupCommandBy(action);
+		return cmd.execute(params);
+	}
+}
+
+

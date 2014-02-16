@@ -1,0 +1,24 @@
+//Martin Fowler:
+//复杂的条件逻辑是最常导致复杂度上升的地点之一。
+
+//条件逻辑往往用来确定应该使用算法的哪个变体。另一方面，它们也可能会在类中产生许多仅仅用来处理算法的特殊变体的小方法，从而增加类的复杂度。
+//这样把算法的每个变体搬到新的类或子类是更好的选择。
+
+class GenerateForecastSummaryReport{
+
+    public void pullWeeklyForecast(){
+        if (redis_data.isReady == ture) {
+          // 
+          pullDataFromRedis();
+        }else if (s3_data.isReady == true){
+          pullDataFromS3();
+        }else {
+          pullDataFromSandopRevolution();
+        }
+        //...........
+    }
+    
+    // A big function
+    public void pullDtaFromRedis(){
+    }
+}
